@@ -1,70 +1,313 @@
-# Getting Started with Create React App
+# Portfolio Website - MERN Stack
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+A clean, responsive, and high-performance portfolio website built with the MERN stack (MongoDB, Express, React, Node.js). This project features a modern UI/UX design with an admin dashboard for managing portfolio projects and contact messages.
 
-## Available Scripts
+## 🚀 Features
 
-In the project directory, you can run:
+### Frontend
+- **Responsive Design**: Fully responsive across desktop, tablet, and mobile devices
+- **Modern UI**: Clean and professional design with smooth animations using Framer Motion
+- **Components**:
+  - Header with navigation
+  - Hero section with introduction
+  - About section with skill progress bars
+  - Services section with interactive cards
+  - Portfolio section with filterable project grid
+  - Contact form
+  - Footer with social links
 
-### `npm start`
+### Backend
+- **RESTful API**: Complete API for projects, messages, and admin authentication
+- **Security**: JWT authentication, bcrypt password hashing, Helmet, CORS, rate limiting
+- **Database**: MongoDB with Mongoose ODM
+- **Admin Dashboard**: Protected admin panel for managing projects and viewing messages
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+## 🛠️ Tech Stack
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+### Frontend
+- React 18
+- Tailwind CSS
+- React Router
+- Framer Motion
+- Axios
+- Lucide React (Icons)
 
-### `npm test`
+### Backend
+- Node.js
+- Express.js
+- MongoDB + Mongoose
+- JWT (JSON Web Tokens)
+- bcryptjs
+- Nodemailer (optional, for email notifications)
+- Express Validator
+- Helmet
+- CORS
+- Express Rate Limit
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## 📁 Project Structure
 
-### `npm run build`
+```
+manoj_portfolio/
+├── client/                 # React frontend
+│   ├── src/
+│   │   ├── components/     # Reusable components
+│   │   ├── pages/          # Page components
+│   │   ├── utils/          # Utility functions
+│   │   ├── App.jsx         # Main app component
+│   │   └── index.js        # Entry point
+│   ├── public/             # Static files
+│   └── package.json
+├── server/                 # Express backend
+│   ├── src/
+│   │   ├── controllers/    # Route controllers
+│   │   ├── models/         # Mongoose models
+│   │   ├── routes/         # API routes
+│   │   ├── middleware/     # Custom middleware
+│   │   ├── utils/          # Utility functions
+│   │   ├── app.js          # Express app configuration
+│   │   └── index.js        # Server entry point
+│   └── package.json
+└── package.json            # Root package.json
+```
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+## 🚀 Getting Started
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+### Prerequisites
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+- Node.js (v14 or higher)
+- MongoDB (local or MongoDB Atlas)
+- npm or yarn
 
-### `npm run eject`
+### Installation
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+1. **Clone the repository**
+   ```bash
+   git clone <repository-url>
+   cd manoj_portfolio
+   ```
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+2. **Install dependencies**
+   ```bash
+   # Install root dependencies
+   npm install
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+   # Install client dependencies
+   cd client
+   npm install
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+   # Install server dependencies
+   cd ../server
+   npm install
+   ```
 
-## Learn More
+3. **Set up environment variables**
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+   Copy the `.env.example` file to `.env` in the `server` directory:
+   ```bash
+   cd server
+   cp .env.example .env
+   ```
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+   Then edit the `.env` file with your configuration:
+   ```env
+   # Server Configuration
+   PORT=5000
+   NODE_ENV=development
 
-### Code Splitting
+   # MongoDB Configuration
+   MONGODB_URI=mongodb://localhost:27017/portfolio
+   # For MongoDB Atlas: mongodb+srv://username:password@cluster.mongodb.net/portfolio
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+   # JWT Configuration
+   JWT_SECRET=your_super_secret_jwt_key_change_this_in_production
+   JWT_EXPIRE=7d
 
-### Analyzing the Bundle Size
+   # Email Configuration (Optional)
+   EMAIL_HOST=smtp.gmail.com
+   EMAIL_PORT=587
+   EMAIL_USER=your_email@gmail.com
+   EMAIL_PASS=your_app_password
+   EMAIL_FROM=your_email@gmail.com
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+   # CORS Configuration
+   CLIENT_URL=http://localhost:3000
+   ```
 
-### Making a Progressive Web App
+4. **Set up MongoDB**
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+   - For local MongoDB: Make sure MongoDB is running on your machine
+   - For MongoDB Atlas: Update the `MONGODB_URI` in `.env` with your Atlas connection string
 
-### Advanced Configuration
+5. **Create admin user**
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+   **Option 1: Using the create-admin script (Recommended)**
+   ```bash
+   cd server
+   npm run create-admin [username] [email] [password]
+   # Example: npm run create-admin admin admin@example.com mypassword123
+   ```
 
-### Deployment
+   **Option 2: Using the API**
+   After starting the server, you can create an admin user by making a POST request to `/api/admin/register`:
+   ```bash
+   curl -X POST http://localhost:5000/api/admin/register \
+     -H "Content-Type: application/json" \
+     -d '{
+       "username": "admin",
+       "email": "admin@example.com",
+       "password": "your_secure_password"
+     }'
+   ```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+### Running the Application
 
-### `npm run build` fails to minify
+#### Development Mode
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+**Option 1: Run client and server separately**
+
+```bash
+# Terminal 1 - Start server
+cd server
+npm run dev
+
+# Terminal 2 - Start client
+cd client
+npm start
+```
+
+**Option 2: Run both concurrently (from root)**
+
+```bash
+npm run dev
+```
+
+#### Production Mode
+
+```bash
+# Build client
+cd client
+npm run build
+
+# Start server
+cd ../server
+npm start
+```
+
+The application will be available at:
+- Frontend: http://localhost:3000
+- Backend API: http://localhost:5000
+- Admin Dashboard: http://localhost:3000/admin/login
+
+## 📚 API Endpoints
+
+### Public Endpoints
+
+- `GET /api/projects` - Get all projects (optional query: `?category=UI/UX`)
+- `GET /api/projects/:id` - Get single project
+- `POST /api/contact` - Send contact message
+
+### Protected Endpoints (Admin Only)
+
+- `POST /api/admin/login` - Admin login
+- `GET /api/admin/me` - Get current admin user
+- `POST /api/projects` - Create new project
+- `PUT /api/projects/:id` - Update project
+- `DELETE /api/projects/:id` - Delete project
+- `GET /api/contact` - Get all messages
+- `PUT /api/contact/:id/read` - Mark message as read
+- `DELETE /api/contact/:id` - Delete message
+
+## 🔐 Admin Dashboard
+
+1. Navigate to `/admin/login`
+2. Login with your admin credentials
+3. Manage projects:
+   - Add new projects
+   - Edit existing projects
+   - Delete projects
+4. View and manage contact messages:
+   - View all messages
+   - Mark messages as read
+   - Delete messages
+
+## 🎨 Customization
+
+### Colors
+
+Edit `client/tailwind.config.js` to customize the color scheme:
+
+```javascript
+theme: {
+  extend: {
+    colors: {
+      primary: {
+        // Your primary colors
+      },
+      accent: {
+        // Your accent colors
+      }
+    }
+  }
+}
+```
+
+### Content
+
+- Update component content in `client/src/components/`
+- Modify skill progress bars in `About.jsx`
+- Update services in `Services.jsx`
+- Add/remove social media links in `Hero.jsx` and `Footer.jsx`
+
+## 🧪 Testing
+
+```bash
+# Run client tests
+cd client
+npm test
+
+# Run server tests
+cd server
+npm test
+```
+
+## 🚢 Deployment
+
+### Frontend Deployment (Vercel/Netlify)
+
+1. Build the client:
+   ```bash
+   cd client
+   npm run build
+   ```
+
+2. Deploy the `build` folder to your hosting platform
+
+3. Set environment variables:
+   - `REACT_APP_API_URL`: Your backend API URL
+
+### Backend Deployment (Heroku/Railway/DigitalOcean)
+
+1. Set environment variables in your hosting platform
+2. Update `CLIENT_URL` to your frontend URL
+3. Deploy the server
+
+### Database
+
+- Use MongoDB Atlas for cloud database
+- Update `MONGODB_URI` in production environment variables
+
+## 📝 License
+
+This project is open source and available under the [MIT License](LICENSE).
+
+## 🤝 Contributing
+
+Contributions, issues, and feature requests are welcome!
+
+## 📧 Contact
+
+For questions or support, please open an issue in the repository.
+
+---
+
+Built with ❤️ using the MERN stack
