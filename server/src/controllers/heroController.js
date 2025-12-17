@@ -40,7 +40,7 @@ export const getHero = async (req, res, next) => {
  */
 export const updateHero = async (req, res, next) => {
   try {
-    const { greeting, name, designation, description, linkedinUrl, githubUrl, image } = req.body;
+    const { greeting, name, designation, description, linkedinUrl, githubUrl, image, phone, email, address } = req.body;
 
     // Normalize image URL if provided
     let imageUrl = image;
@@ -62,6 +62,9 @@ export const updateHero = async (req, res, next) => {
         linkedinUrl: linkedinUrl || 'https://www.linkedin.com/in/manojv03/',
         githubUrl: githubUrl || 'https://github.com/ManojGowda15',
         image: imageUrl || '',
+        phone: phone || '',
+        email: email || '',
+        address: address || '',
       });
     } else {
       // Update existing hero
@@ -72,6 +75,9 @@ export const updateHero = async (req, res, next) => {
       if (linkedinUrl !== undefined) hero.linkedinUrl = linkedinUrl;
       if (githubUrl !== undefined) hero.githubUrl = githubUrl;
       if (imageUrl !== undefined) hero.image = imageUrl;
+      if (phone !== undefined) hero.phone = phone;
+      if (email !== undefined) hero.email = email;
+      if (address !== undefined) hero.address = address;
       
       await hero.save();
     }

@@ -5,11 +5,11 @@ import Footer from '../components/Footer';
 
 const FeedbackPage = () => {
   return (
-    <div className="min-h-screen overflow-x-hidden">
+    <div className="min-h-screen overflow-x-hidden bg-blue-50">
       <Header />
-      <div className="pt-20">
+      <main className="pt-20">
         <Feedback />
-      </div>
+      </main>
       <Footer />
     </div>
   );

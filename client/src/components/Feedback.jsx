@@ -32,27 +32,86 @@ const Feedback = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     
+    // Validate rating
     if (formData.rating === 0) {
       toast.error('Please select a rating');
+      return;
+    }
+
+    // Validate all required fields
+    if (!formData.name || !formData.name.trim()) {
+      toast.error('Please enter your name');
+      return;
+    }
+
+    if (!formData.email || !formData.email.trim()) {
+      toast.error('Please enter your email');
+      return;
+    }
+
+    // Basic email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(formData.email)) {
+      toast.error('Please enter a valid email address');
+      return;
+    }
+
+    if (!formData.feedback || !formData.feedback.trim()) {
+      toast.error('Please enter your feedback');
       return;
     }
 
     setLoading(true);
 
     try {
-      await feedbackAPI.submitFeedback(formData);
-      toast.success('Thank you for your feedback! Your opinion matters to us.');
-      setFormData({
-        name: '',
-        email: '',
-        rating: 0,
-        feedback: '',
+      const response = await feedbackAPI.submitFeedback({
+        name: formData.name.trim(),
+        email: formData.email.trim().toLowerCase(),
+        rating: formData.rating,
+        feedback: formData.feedback.trim(),
       });
-      setHoveredRating(0);
+
+      if (response && response.data && response.data.success) {
+        toast.success('Thank you for your feedback! Your opinion matters to us.');
+        setFormData({
+          name: '',
+          email: '',
+          rating: 0,
+          feedback: '',
+        });
+        setHoveredRating(0);
+      } else {
+        throw new Error(response?.data?.message || 'Failed to submit feedback');
+      }
     } catch (err) {
-      const errorMessage = err.response?.data?.message || 
-                          err.response?.data?.errors?.[0]?.msg || 
-                          'Failed to submit feedback. Please try again.';
+      console.error('Feedback submission error:', err);
+      
+      let errorMessage = 'Failed to submit feedback. Please try again.';
+      
+      if (err.response) {
+        // Server responded with error
+        if (err.response.data) {
+          if (err.response.data.message) {
+            errorMessage = err.response.data.message;
+          } else if (err.response.data.errors && Array.isArray(err.response.data.errors) && err.response.data.errors.length > 0) {
+            errorMessage = err.response.data.errors[0].msg || err.response.data.errors[0].message || errorMessage;
+          } else if (typeof err.response.data === 'string') {
+            errorMessage = err.response.data;
+          }
+        } else if (err.response.status === 400) {
+          errorMessage = 'Invalid data. Please check your input and try again.';
+        } else if (err.response.status === 500) {
+          errorMessage = 'Server error. Please try again later.';
+        } else if (err.response.status === 404) {
+          errorMessage = 'API endpoint not found. Please contact support.';
+        }
+      } else if (err.request) {
+        // Request was made but no response received
+        errorMessage = 'Network error. Please check your connection and try again.';
+      } else if (err.message) {
+        errorMessage = err.message;
+      }
+      
       toast.error(errorMessage);
     } finally {
       setLoading(false);
@@ -60,7 +119,7 @@ const Feedback = () => {
   };
 
   return (
-    <section id="feedback" className="py-12 sm:py-16 md:py-20 bg-gradient-to-br from-blue-50 to-indigo-50">
+    <section id="feedback" className="py-12 sm:py-16 md:py-20">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div
           initial={{ opacity: 0, y: -20 }}

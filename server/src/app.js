@@ -61,18 +61,26 @@ const corsOptions = {
 
 app.use(cors(corsOptions));
 
-// Rate limiting
+// General rate limiting for all API routes
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
   max: 100, // limit each IP to 100 requests per windowMs
-  message: 'Too many requests from this IP, please try again later.',
+  message: {
+    success: false,
+    message: 'Too many requests from this IP, please try again later.',
+  },
+  standardHeaders: true,
+  legacyHeaders: false,
+  // Don't skip successful requests to prevent abuse
+  skipSuccessfulRequests: false,
+  skipFailedRequests: false,
 });
 
 app.use('/api/', limiter);
 
-// Body parser middleware
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+// Body parser middleware with size limits to prevent DoS attacks
+app.use(express.json({ limit: '10mb' })); // Limit JSON payload size
+app.use(express.urlencoded({ extended: true, limit: '10mb' })); // Limit URL-encoded payload size
 
 // Serve static files from public directory
 app.use('/images', express.static(path.join(__dirname, '../public/images')));

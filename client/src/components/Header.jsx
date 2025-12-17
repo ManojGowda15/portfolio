@@ -15,7 +15,7 @@ const Header = () => {
       setIsScrolled(window.scrollY > 20);
       
       // Detect active section for menu highlighting
-      const sections = ['home', 'about', 'services', 'education', 'portfolio', 'contact'];
+      const sections = ['home', 'about', 'services', 'education', 'portfolio', 'contact', 'feedback'];
       const scrollPosition = window.scrollY + 100;
       
       for (let i = sections.length - 1; i >= 0; i--) {
@@ -49,6 +49,7 @@ const Header = () => {
     { name: 'Services', href: '#services', icon: Settings, section: 'services' },
     { name: 'Education', href: '#education', icon: GraduationCap, section: 'education' },
     { name: 'Portfolio', href: '#portfolio', icon: FolderKanban, section: 'portfolio' },
+    { name: 'Feedback', href: '/feedback', icon: MessageCircle, section: 'feedback', isRoute: true },
   ];
 
   const socialLinks = [

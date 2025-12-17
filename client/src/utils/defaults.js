@@ -11,6 +11,9 @@ export const DEFAULT_HERO = {
   linkedinUrl: 'https://www.linkedin.com/in/manojv03/',
   githubUrl: 'https://github.com/ManojGowda15',
   image: '',
+  phone: '+91-7204540632',
+  email: 'info@sunilgr.com / sunivinay@gmail.com',
+  address: '#43, Kushi Nilaya, 9/1 F Cross Road, 1st Main 2nd Cross, Lakshman Nagar, Hegganahalli Cross, Bangalore - 560091',
 };
 
 export const DEFAULT_ABOUT = {
@@ -22,7 +25,12 @@ export const DEFAULT_ABOUT = {
     { name: 'App Design', progress: 75, color: 'bg-gray-500' },
     { name: 'MySQL', progress: 70, color: 'bg-red-500' },
   ],
-  image: '',
+  highlights: [
+    { value: '5+', label: 'Years of Experience', detail: 'Building digital products' },
+    { value: '30+', label: 'Projects Delivered', detail: 'Web & mobile solutions' },
+    { value: '15+', label: 'Technologies', detail: 'Across the stack' },
+  ],
+  mission: 'Crafting meaningful products that balance stunning visuals with dependable performance.',
 };
 
 export const DEFAULT_SERVICES = {

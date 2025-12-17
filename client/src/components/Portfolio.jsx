@@ -3,6 +3,25 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { ZoomIn, ExternalLink, X } from 'lucide-react';
 import { projectsAPI } from '../utils/api';
 
+// Helper function to normalize image URLs - moved outside component to prevent recreation
+const normalizeImageUrl = (imageUrl) => {
+  if (!imageUrl) return 'https://via.placeholder.com/400x300';
+  
+  // If it's already a full URL, use it as is (server already normalizes it)
+  if (imageUrl.startsWith('http://') || imageUrl.startsWith('https://')) {
+    return imageUrl;
+  }
+  
+  // If it's a relative path starting with /images/, construct full URL
+  if (imageUrl.startsWith('/images/')) {
+    const baseUrl = window.location.origin;
+    return `${baseUrl}${imageUrl}`;
+  }
+  
+  // Return placeholder for invalid URLs
+  return 'https://via.placeholder.com/400x300';
+};
+
 const Portfolio = () => {
   const [activeFilter, setActiveFilter] = useState('All');
   const [projects, setProjects] = useState([]);
@@ -17,7 +36,7 @@ const Portfolio = () => {
       const category = activeFilter === 'All' ? '' : activeFilter;
       const response = await projectsAPI.getAll(category);
       
-      // Normalize image URLs to ensure they're always accessible
+      // Server already normalizes URLs, but ensure they're accessible
       const projects = (response.data.data || []).map(project => ({
         ...project,
         image: normalizeImageUrl(project.image),
@@ -32,41 +51,12 @@ const Portfolio = () => {
     }
   }, [activeFilter]);
 
-  // Helper function to normalize image URLs
-  const normalizeImageUrl = (imageUrl) => {
-    if (!imageUrl) return 'https://via.placeholder.com/400x300';
-    
-    // If it's a relative path, construct full URL
-    if (imageUrl.startsWith('/images/')) {
-      const baseUrl = window.location.origin;
-      return `${baseUrl}${imageUrl}`;
-    }
-    
-    // If it's already a full URL, check if it contains localhost
-    if (imageUrl.startsWith('http://') || imageUrl.startsWith('https://')) {
-      // If it contains localhost, replace with current origin (for mobile access)
-      if (imageUrl.includes('localhost') || imageUrl.includes('127.0.0.1')) {
-        try {
-          const url = new URL(imageUrl);
-          return imageUrl.replace(url.origin, window.location.origin);
-        } catch (e) {
-          // If URL parsing fails, try simple string replace
-          return imageUrl.replace(/https?:\/\/[^/]+/, window.location.origin);
-        }
-      }
-      return imageUrl;
-    }
-    
-    // Return as is for other cases
-    return imageUrl;
-  };
-
   useEffect(() => {
     fetchProjects();
   }, [fetchProjects]);
 
   return (
-    <section id="portfolio" className="py-12 sm:py-16 md:py-20 bg-white pt-20 sm:pt-24 md:pt-32">
+    <section id="portfolio" className="py-12 sm:py-16 md:py-20 bg-blue-50 pt-20 sm:pt-24 md:pt-32">
       <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div
           initial={{ opacity: 0, y: -20 }}
@@ -138,7 +128,10 @@ const Portfolio = () => {
                       className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
                       onError={(e) => {
                         console.error('Image failed to load:', project.image);
-                        e.target.src = 'https://via.placeholder.com/400x300?text=Image+Not+Available';
+                        // Prevent infinite loop by checking if already set to placeholder
+                        if (e.target.src !== 'https://via.placeholder.com/400x300?text=Image+Not+Available') {
+                          e.target.src = 'https://via.placeholder.com/400x300?text=Image+Not+Available';
+                        }
                       }}
                       loading="lazy"
                     />
@@ -196,7 +189,10 @@ const Portfolio = () => {
                     className="w-full h-48 sm:h-64 object-cover"
                     onError={(e) => {
                       console.error('Image failed to load:', selectedProject.image);
-                      e.target.src = 'https://via.placeholder.com/800x600?text=Image+Not+Available';
+                      // Prevent infinite loop by checking if already set to placeholder
+                      if (e.target.src !== 'https://via.placeholder.com/800x600?text=Image+Not+Available') {
+                        e.target.src = 'https://via.placeholder.com/800x600?text=Image+Not+Available';
+                      }
                     }}
                   />
                 </div>

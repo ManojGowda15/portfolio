@@ -10,55 +10,71 @@ import FeedbackPage from './pages/FeedbackPage';
 function App() {
   useEffect(() => {
     // Disable right-click
-    const handleContextMenu = (e) => {
+    const handleContextMenu = e => {
       e.preventDefault();
       return false;
     };
 
     // Disable text selection - only on non-input elements
-    const handleSelectStart = (e) => {
+    const handleSelectStart = e => {
       const target = e.target;
-      if (target.tagName !== 'INPUT' && target.tagName !== 'TEXTAREA' && !target.isContentEditable) {
+      if (
+        target.tagName !== 'INPUT' &&
+        target.tagName !== 'TEXTAREA' &&
+        !target.isContentEditable
+      ) {
         e.preventDefault();
         return false;
       }
     };
 
     // Disable drag
-    const handleDragStart = (e) => {
+    const handleDragStart = e => {
       e.preventDefault();
       return false;
     };
 
     // Disable copy (Ctrl+C, Cmd+C) - only on non-input elements
-    const handleCopy = (e) => {
+    const handleCopy = e => {
       const target = e.target;
-      if (target.tagName !== 'INPUT' && target.tagName !== 'TEXTAREA' && !target.isContentEditable) {
+      if (
+        target.tagName !== 'INPUT' &&
+        target.tagName !== 'TEXTAREA' &&
+        !target.isContentEditable
+      ) {
         e.preventDefault();
         return false;
       }
     };
 
     // Disable cut (Ctrl+X, Cmd+X) - only on non-input elements
-    const handleCut = (e) => {
+    const handleCut = e => {
       const target = e.target;
-      if (target.tagName !== 'INPUT' && target.tagName !== 'TEXTAREA' && !target.isContentEditable) {
+      if (
+        target.tagName !== 'INPUT' &&
+        target.tagName !== 'TEXTAREA' &&
+        !target.isContentEditable
+      ) {
         e.preventDefault();
         return false;
       }
     };
 
     // Disable paste (Ctrl+V, Cmd+V) - only on non-input elements
-    const handlePaste = (e) => {
+    const handlePaste = e => {
       const target = e.target;
-      if (target.tagName !== 'INPUT' && target.tagName !== 'TEXTAREA' && !target.isContentEditable) {
+      if (
+        target.tagName !== 'INPUT' &&
+        target.tagName !== 'TEXTAREA' &&
+        !target.isContentEditable
+      ) {
         e.preventDefault();
         return false;
       }
     };
 
     // Disable F12, Ctrl+Shift+I, Ctrl+Shift+J, Ctrl+U (view source)
-    const handleKeyDown = (e) => {
+    const handleKeyDown = e => {
       // F12
       if (e.keyCode === 123) {
         e.preventDefault();
@@ -131,4 +147,3 @@ function App() {
 }
 
 export default App;
-

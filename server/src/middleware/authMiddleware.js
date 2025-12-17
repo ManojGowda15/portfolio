@@ -15,14 +15,28 @@ export const protect = async (req, res, next) => {
       // Get token from header
       token = req.headers.authorization.split(' ')[1];
 
-      // Verify token
-      const decoded = jwt.verify(token, process.env.JWT_SECRET);
+      // Verify token with error handling for expired tokens
+      let decoded;
+      try {
+        decoded = jwt.verify(token, process.env.JWT_SECRET);
+      } catch (error) {
+        if (error.name === 'TokenExpiredError') {
+          return res.status(401).json({ 
+            success: false,
+            message: 'Token expired. Please login again.' 
+          });
+        }
+        throw error; // Re-throw other errors
+      }
 
       // Get user from token (exclude password)
       req.user = await AdminUser.findById(decoded.id).select('-password');
 
       if (!req.user) {
-        return res.status(401).json({ message: 'User not found' });
+        return res.status(401).json({ 
+          success: false,
+          message: 'User not found' 
+        });
       }
 
       next();

@@ -89,10 +89,8 @@ const projectImageStorage = multer.diskStorage({
     const ext = path.extname(file.originalname);
     // Check if this is a hero or about image upload (check route or custom field)
     const isHeroImage = req.originalUrl?.includes('/hero/upload-image') || req.body?.imageType === 'hero';
-    const isAboutImage = req.originalUrl?.includes('/about/upload-image') || req.body?.imageType === 'about';
     let prefix = 'project';
     if (isHeroImage) prefix = 'hero';
-    else if (isAboutImage) prefix = 'about';
     cb(null, `${prefix}-${uniqueSuffix}${ext}`);
   },
 });

@@ -50,11 +50,9 @@ const AdminDashboard = () => {
   const [uploadingHeroImage, setUploadingHeroImage] = useState(false);
   const [aboutContent, setAboutContent] = useState(DEFAULT_ABOUT);
   const [savingAbout, setSavingAbout] = useState(false);
-  const [aboutImageFile, setAboutImageFile] = useState(null);
-  const [uploadingAboutImage, setUploadingAboutImage] = useState(false);
   const [showCropper, setShowCropper] = useState(false);
   const [cropperImageSrc, setCropperImageSrc] = useState(null);
-  const [cropperType, setCropperType] = useState(null); // 'hero' or 'about'
+  const [cropperType, setCropperType] = useState(null); // currently only 'hero'
   const [cropperAspectRatio, setCropperAspectRatio] = useState(null);
   const [servicesContent, setServicesContent] = useState(DEFAULT_SERVICES);
   const [savingServices, setSavingServices] = useState(false);
@@ -152,25 +150,7 @@ const AdminDashboard = () => {
     try {
       const response = await aboutAPI.getAbout();
       if (response.data.success && response.data.data) {
-        const data = response.data.data;
-        // Normalize image URL for mobile compatibility
-        if (data.image) {
-          // If it's a relative path, make it absolute
-          if (data.image.startsWith('/images/')) {
-            const baseUrl = window.location.origin;
-            data.image = `${baseUrl}${data.image}`;
-          }
-          // If it contains localhost, replace with current origin (for mobile access)
-          else if (data.image.includes('localhost') || data.image.includes('127.0.0.1')) {
-            try {
-              const url = new URL(data.image);
-              data.image = data.image.replace(url.origin, window.location.origin);
-            } catch (e) {
-              data.image = data.image.replace(/https?:\/\/[^/]+/, window.location.origin);
-            }
-          }
-        }
-        setAboutContent(data);
+        setAboutContent(response.data.data);
       }
     } catch (error) {
       console.error('Error fetching about content:', error);
@@ -267,8 +247,9 @@ const AdminDashboard = () => {
     } else if (activeTab === 'education') {
       fetchEducationContent();
     }
+    // Note: fetch functions are stable useCallbacks, so they don't need to be in deps
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [activeTab, isInitialized]); // Depend on activeTab and isInitialized
+  }, [activeTab, isInitialized]);
 
   // Note: Removed beforeunload token clearing as it was too aggressive
   // Token will be cleared on explicit logout or 401 errors only
@@ -546,98 +527,16 @@ const AdminDashboard = () => {
         setHeroContent({ ...heroContent, image: finalImageUrl });
         setHeroImageFile(null);
         toast.success('Hero image uploaded successfully!');
-      } else if (cropperType === 'about') {
-        setUploadingAboutImage(true);
-        const formData = new FormData();
-        formData.append('image', croppedBlob, 'about-image.jpg');
-        formData.append('imageType', 'about');
-
-        const response = await aboutAPI.uploadImage(formData);
-        
-        const imageUrl = response.data.data.fullImageUrl || response.data.data.imageUrl;
-        let finalImageUrl = imageUrl;
-        if (imageUrl) {
-          // If it's a relative path, make it absolute
-          if (imageUrl.startsWith('/images/')) {
-            const baseUrl = window.location.origin;
-            finalImageUrl = `${baseUrl}${imageUrl}`;
-          }
-          // If it contains localhost, replace with current origin (for mobile access)
-          else if (imageUrl.includes('localhost') || imageUrl.includes('127.0.0.1')) {
-            try {
-              const url = new URL(imageUrl);
-              finalImageUrl = imageUrl.replace(url.origin, window.location.origin);
-            } catch (e) {
-              finalImageUrl = imageUrl.replace(/https?:\/\/[^/]+/, window.location.origin);
-            }
-          }
-        }
-        
-        setAboutContent({ ...aboutContent, image: finalImageUrl });
-        setAboutImageFile(null);
-        toast.success('About image uploaded successfully!');
       }
     } catch (error) {
       console.error('Error uploading cropped image:', error);
       toast.error(error.response?.data?.message || 'Failed to upload image. Please try again.');
     } finally {
       setUploadingHeroImage(false);
-      setUploadingAboutImage(false);
       setShowCropper(false);
       setCropperImageSrc(null);
       setCropperType(null);
     }
-  };
-
-  const handleAboutImageUpload = async (file) => {
-    if (!file) {
-      return;
-    }
-
-    // Validate file type - more lenient check
-    const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
-    const allowedExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.webp', '.JPG', '.JPEG', '.PNG', '.GIF', '.WEBP'];
-    const fileExtension = file.name.substring(file.name.lastIndexOf('.')).toLowerCase();
-    const fileType = file.type.toLowerCase();
-
-    // Check both MIME type and extension (case-insensitive)
-    const isValidType = allowedTypes.some(type => fileType.includes(type.split('/')[1])) || 
-                        allowedExtensions.includes(fileExtension);
-
-    if (!isValidType) {
-      toast.error('Invalid file type. Please upload an image file (JPG, PNG, GIF, or WEBP).');
-      const fileInput = document.getElementById('about-image-input');
-      if (fileInput) {
-        fileInput.value = '';
-      }
-      setAboutImageFile(null);
-      return;
-    }
-
-    // Validate file size (5MB limit)
-    if (file.size > 5 * 1024 * 1024) {
-      toast.error('File size too large. Please upload an image smaller than 5MB.');
-      const fileInput = document.getElementById('about-image-input');
-      if (fileInput) {
-        fileInput.value = '';
-      }
-      setAboutImageFile(null);
-      return;
-    }
-
-    // Show cropper instead of directly uploading
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      setCropperImageSrc(e.target.result);
-      setCropperType('about');
-      setCropperAspectRatio(null); // Free aspect ratio for about
-      setShowCropper(true);
-    };
-    reader.onerror = () => {
-      toast.error('Failed to read image file. Please try again.');
-      setAboutImageFile(null);
-    };
-    reader.readAsDataURL(file);
   };
 
   const handleImageUpload = async (file) => {
@@ -1387,6 +1286,47 @@ const AdminDashboard = () => {
                   </div>
                 </div>
 
+                <div className="grid md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-gray-700 font-medium mb-2">Phone</label>
+                    <input
+                      type="text"
+                      value={heroContent.phone || ''}
+                      onChange={(e) =>
+                        setHeroContent({ ...heroContent, phone: e.target.value })
+                      }
+                      placeholder="+91-9638527415"
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent outline-none"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-gray-700 font-medium mb-2">Email</label>
+                    <input
+                      type="text"
+                      value={heroContent.email || ''}
+                      onChange={(e) =>
+                        setHeroContent({ ...heroContent, email: e.target.value })
+                      }
+                      placeholder="info@domain_name.com / email@gmail.com"
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent outline-none"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-gray-700 font-medium mb-2">Address</label>
+                  <textarea
+                    value={heroContent.address || ''}
+                    onChange={(e) =>
+                      setHeroContent({ ...heroContent, address: e.target.value })
+                    }
+                    placeholder="456 Maple Avenue, Los Angeles, CA 90001, United States"
+                    rows={3}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent outline-none"
+                  />
+                </div>
+
                 <div>
                   <label className="block text-gray-700 font-medium mb-2">Hero Image</label>
                   <div className="space-y-3">
@@ -1603,63 +1543,100 @@ const AdminDashboard = () => {
                 </div>
 
                 <div>
-                  <label className="block text-gray-700 font-medium mb-2">About Image</label>
-                  <div className="space-y-3">
-                    <div>
-                      <label className="block text-sm text-gray-600 mb-2">Image URL</label>
-                      <input
-                        type="url"
-                        value={aboutContent.image}
-                        onChange={(e) =>
-                          setAboutContent({ ...aboutContent, image: e.target.value })
-                        }
-                        placeholder="https://example.com/image.jpg or upload below"
-                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent outline-none"
-                      />
-                    </div>
-                    <div className="text-center text-gray-500">OR</div>
-                    <div>
-                      <label className="block text-sm text-gray-600 mb-2">Upload Image</label>
-                      <input
-                        id="about-image-input"
-                        type="file"
-                        accept="image/*"
-                        onChange={async (e) => {
-                          const file = e.target.files[0];
-                          if (file) {
-                            setAboutImageFile(file);
-                            await handleAboutImageUpload(file);
-                          }
-                        }}
-                        disabled={uploadingAboutImage}
-                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent outline-none disabled:opacity-50 disabled:cursor-not-allowed"
-                      />
-                      {uploadingAboutImage && (
-                        <p className="text-sm text-blue-600 mt-1 flex items-center gap-2">
-                          <div className="w-4 h-4 border-2 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
-                          Uploading image...
-                        </p>
-                      )}
-                      {aboutImageFile && !uploadingAboutImage && (
-                        <p className="text-sm text-green-600 mt-1">
-                          ✓ {aboutImageFile.name} uploaded successfully
-                        </p>
-                      )}
-                    </div>
-                    {aboutContent.image && (
-                      <div className="mt-4">
-                        <label className="block text-sm text-gray-600 mb-2">Preview</label>
-                        <img
-                          src={aboutContent.image}
-                          alt="About preview"
-                          className="w-full max-w-md h-64 object-cover rounded-lg border border-gray-300"
-                          onError={(e) => {
-                            e.target.src = 'https://via.placeholder.com/400x300?text=Image+Not+Available';
-                          }}
-                        />
-                      </div>
-                    )}
+                  <div className="flex justify-between items-center mb-4">
+                    <label className="block text-gray-700 font-medium">Highlights</label>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setAboutContent({
+                          ...aboutContent,
+                          highlights: [
+                            ...(aboutContent.highlights || []),
+                            { value: '', label: '', detail: '' },
+                          ],
+                        });
+                      }}
+                      className="text-sm bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700 transition-colors"
+                    >
+                      + Add Highlight
+                    </button>
                   </div>
+                  <div className="space-y-4">
+                    {(aboutContent.highlights || []).map((highlight, index) => (
+                      <div
+                        key={index}
+                        className="border border-gray-200 rounded-lg p-4 space-y-3"
+                      >
+                        <div className="grid md:grid-cols-3 gap-4">
+                          <div>
+                            <label className="block text-sm text-gray-600 mb-1">Value</label>
+                            <input
+                              type="text"
+                              value={highlight.value || ''}
+                              onChange={(e) => {
+                                const newHighlights = [...(aboutContent.highlights || [])];
+                                newHighlights[index].value = e.target.value;
+                                setAboutContent({ ...aboutContent, highlights: newHighlights });
+                              }}
+                              placeholder="e.g., 5+"
+                              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent outline-none text-sm"
+                            />
+                          </div>
+                          <div>
+                            <label className="block text-sm text-gray-600 mb-1">Label</label>
+                            <input
+                              type="text"
+                              value={highlight.label || ''}
+                              onChange={(e) => {
+                                const newHighlights = [...(aboutContent.highlights || [])];
+                                newHighlights[index].label = e.target.value;
+                                setAboutContent({ ...aboutContent, highlights: newHighlights });
+                              }}
+                              placeholder="e.g., Years of Experience"
+                              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent outline-none text-sm"
+                            />
+                          </div>
+                          <div>
+                            <label className="block text-sm text-gray-600 mb-1">Detail</label>
+                            <input
+                              type="text"
+                              value={highlight.detail || ''}
+                              onChange={(e) => {
+                                const newHighlights = [...(aboutContent.highlights || [])];
+                                newHighlights[index].detail = e.target.value;
+                                setAboutContent({ ...aboutContent, highlights: newHighlights });
+                              }}
+                              placeholder="e.g., Building digital products"
+                              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent outline-none text-sm"
+                            />
+                          </div>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const newHighlights = (aboutContent.highlights || []).filter((_, i) => i !== index);
+                            setAboutContent({ ...aboutContent, highlights: newHighlights });
+                          }}
+                          className="text-sm text-red-600 hover:text-red-700"
+                        >
+                          Remove Highlight
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-gray-700 font-medium mb-2">Mission Statement</label>
+                  <textarea
+                    value={aboutContent.mission || ''}
+                    onChange={(e) =>
+                      setAboutContent({ ...aboutContent, mission: e.target.value })
+                    }
+                    placeholder="Crafting meaningful products that balance stunning visuals with dependable performance."
+                    rows={3}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent outline-none"
+                  />
                 </div>
 
                 <button
@@ -2499,12 +2476,9 @@ const AdminDashboard = () => {
             setCropperImageSrc(null);
             setCropperType(null);
             setHeroImageFile(null);
-            setAboutImageFile(null);
             // Reset file inputs
             const heroInput = document.getElementById('hero-image-input');
-            const aboutInput = document.getElementById('about-image-input');
             if (heroInput) heroInput.value = '';
-            if (aboutInput) aboutInput.value = '';
           }}
         />
       )}

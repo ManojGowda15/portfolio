@@ -29,9 +29,28 @@ const aboutSchema = new mongoose.Schema(
         },
       },
     ],
-    image: {
+    highlights: [
+      {
+        value: {
+          type: String,
+          default: '',
+          trim: true,
+        },
+        label: {
+          type: String,
+          default: '',
+          trim: true,
+        },
+        detail: {
+          type: String,
+          default: '',
+          trim: true,
+        },
+      },
+    ],
+    mission: {
       type: String,
-      default: '',
+      default: 'Crafting meaningful products that balance stunning visuals with dependable performance.',
       trim: true,
     },
   },

@@ -2,25 +2,37 @@ import AdminUser from '../models/AdminUser.js';
 import jwt from 'jsonwebtoken';
 
 /**
- * Generate JWT Token (no expiration)
+ * Generate JWT Token with expiration (24 hours)
  */
 const generateToken = (id) => {
-  return jwt.sign({ id }, process.env.JWT_SECRET);
+  return jwt.sign(
+    { id },
+    process.env.JWT_SECRET,
+    { expiresIn: '24h' } // Token expires in 24 hours for security
+  );
 };
 
 /**
- * Admin login
+ * Admin login with brute force protection
  * @route POST /api/admin/login
  */
 export const login = async (req, res, next) => {
   try {
     const { username, password } = req.body;
 
-    // Validate input
-    if (!username || !password) {
+    // Validate input - prevent empty strings and only whitespace
+    if (!username || !password || !username.trim() || !password.trim()) {
       return res.status(400).json({
         success: false,
         message: 'Please provide username and password',
+      });
+    }
+
+    // Additional input validation - prevent extremely long inputs (potential DoS)
+    if (username.length > 100 || password.length > 200) {
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid input length',
       });
     }
 
@@ -29,7 +41,10 @@ export const login = async (req, res, next) => {
     // Check for admin user in database (lowercase username for consistency)
     const admin = await AdminUser.findOne({ username: normalizedUsername });
 
+    // Always return same error message to prevent username enumeration
     if (!admin) {
+      // Add small delay to prevent timing attacks
+      await new Promise(resolve => setTimeout(resolve, 100));
       return res.status(401).json({
         success: false,
         message: 'Invalid credentials',
@@ -40,13 +55,15 @@ export const login = async (req, res, next) => {
     const isMatch = await admin.matchPassword(password);
 
     if (!isMatch) {
+      // Add small delay to prevent timing attacks
+      await new Promise(resolve => setTimeout(resolve, 100));
       return res.status(401).json({
         success: false,
         message: 'Invalid credentials',
       });
     }
 
-    // Generate token
+    // Generate token with expiration
     const token = generateToken(admin._id);
 
     res.status(200).json({

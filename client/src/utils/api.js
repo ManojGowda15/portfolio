@@ -109,11 +109,6 @@ export const heroAPI = {
 export const aboutAPI = {
   getAbout: () => api.get('/about'),
   updateAbout: (data) => api.put('/about', data),
-  uploadImage: (formData) => api.post('/about/upload-image', formData, {
-    headers: {
-      'Content-Type': 'multipart/form-data',
-    },
-  }),
 };
 
 export const servicesAPI = {

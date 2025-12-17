@@ -16,23 +16,15 @@ const Hero = () => {
         const response = await heroAPI.getHero();
         if (response.data.success && response.data.data) {
           const data = response.data.data;
-          // Normalize image URL for mobile compatibility
+          // Server already normalizes the image URL, but ensure it's accessible
           if (data.image) {
             // If it's a relative path, make it absolute
             if (data.image.startsWith('/images/')) {
               const baseUrl = window.location.origin;
               data.image = `${baseUrl}${data.image}`;
             }
-            // If it contains localhost, replace with current origin (for mobile access)
-            else if (data.image.includes('localhost') || data.image.includes('127.0.0.1')) {
-              try {
-                const url = new URL(data.image);
-                data.image = data.image.replace(url.origin, window.location.origin);
-              } catch (e) {
-                // If URL parsing fails, try simple string replace
-                data.image = data.image.replace(/https?:\/\/[^/]+/, window.location.origin);
-              }
-            }
+            // If it's already a full URL, use it as is (server already normalized it)
+            // No need to replace localhost as server handles this
           }
           setHeroContent(data);
         }
@@ -54,8 +46,8 @@ const Hero = () => {
       // Use relative URL or detect from current origin
       const getApiUrl = () => {
         if (process.env.REACT_APP_API_URL) {
-          return process.env.REACT_APP_API_URL.endsWith('/api') 
-            ? process.env.REACT_APP_API_URL 
+          return process.env.REACT_APP_API_URL.endsWith('/api')
+            ? process.env.REACT_APP_API_URL
             : `${process.env.REACT_APP_API_URL}/api`;
         }
         // Use relative URL which works on any device
@@ -192,20 +184,20 @@ const Hero = () => {
         <div className="w-24 h-24 sm:w-36 md:w-48 sm:h-36 md:h-48 border-2 border-dashed border-blue-400 rotate-45"></div>
       </div>
 
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 pt-16 sm:pt-20">
-        <div className="grid md:grid-cols-2 gap-8 md:gap-12 items-center">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 xl:px-12 pt-20 pb-12">
+        <div className="grid md:grid-cols-2 gap-8 md:gap-12 lg:gap-16 items-center">
           {/* Left Content */}
           <motion.div
             initial={{ opacity: 0, x: -50 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.6 }}
-            className="relative z-10"
+            className="relative z-10 pl-6 sm:pl-8 md:pl-12 lg:pl-16 xl:pl-20"
           >
             <motion.p
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.2 }}
-              className="text-gray-800 text-lg mb-4"
+              className="text-gray-800 text-lg mb-3"
             >
               {loading ? DEFAULT_HERO.greeting : heroContent.greeting || DEFAULT_HERO.greeting}
             </motion.p>
@@ -213,9 +205,9 @@ const Hero = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.3 }}
-              className="text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-bold text-blue-900 mb-4"
+              className="text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-bold text-blue-900 mb-3"
             >
-              {loading ? DEFAULT_HERO.name : heroContent.name || DEFAULT_HERO.name},
+              {loading ? DEFAULT_HERO.name : heroContent.name || DEFAULT_HERO.name}
             </motion.h1>
 
             <motion.h1
@@ -224,18 +216,53 @@ const Hero = () => {
               transition={{ delay: 0.4 }}
               className="text-3xl sm:text-4xl md:text-6xl lg:text-6xl font-bold text-blue-800 mb-6"
             >
-              {loading ? DEFAULT_HERO.designation : heroContent.designation || DEFAULT_HERO.designation}.
+              {loading
+                ? DEFAULT_HERO.designation
+                : heroContent.designation || DEFAULT_HERO.designation}
             </motion.h1>
             <motion.p
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.5 }}
-              className="text-gray-600 text-base sm:text-lg mb-8 leading-relaxed max-w-lg"
+              className="text-gray-600 text-base sm:text-lg mb-8 leading-relaxed text-justify max-w-xl"
             >
-              {loading 
+              {loading
                 ? 'With a passion for crafting clean, intuitive, and high-performing digital experiences, I develop both web and mobile applications that merge design and functionality seamlessly. From concept to deployment, I focus on creating interactive solutions that captivate users and make a lasting impression.'
-                : heroContent.description || 'With a passion for crafting clean, intuitive, and high-performing digital experiences, I develop both web and mobile applications that merge design and functionality seamlessly. From concept to deployment, I focus on creating interactive solutions that captivate users and make a lasting impression.'}
+                : heroContent.description ||
+                  'With a passion for crafting clean, intuitive, and high-performing digital experiences, I develop both web and mobile applications that merge design and functionality seamlessly. From concept to deployment, I focus on creating interactive solutions that captivate users and make a lasting impression.'}
             </motion.p>
+
+            {/* Contact Details */}
+            {(heroContent.phone || heroContent.email || heroContent.address) && (
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.55 }}
+                className="mb-8 space-y-3"
+              >
+                {heroContent.phone && (
+                  <div className="flex items-start">
+                    <span className="text-gray-700 font-semibold min-w-[80px] text-sm">PHONE:</span>
+                    <span className="text-gray-600 text-sm">{heroContent.phone}</span>
+                  </div>
+                )}
+                {heroContent.email && (
+                  <div className="flex items-start">
+                    <span className="text-gray-700 font-semibold min-w-[80px] text-sm">EMAIL:</span>
+                    <span className="text-gray-600 text-sm">{heroContent.email}</span>
+                  </div>
+                )}
+                {heroContent.address && (
+                  <div className="flex items-start">
+                    <span className="text-gray-700 font-semibold min-w-[80px] text-sm">
+                      ADDRESS:
+                    </span>
+                    <span className="text-gray-600 text-sm">{heroContent.address}</span>
+                  </div>
+                )}
+              </motion.div>
+            )}
+
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -251,7 +278,7 @@ const Hero = () => {
                     contactSection.scrollIntoView({ behavior: 'smooth' });
                   }
                 }}
-                className="bg-blue-600 text-white px-4 sm:px-6 md:px-8 py-2.5 sm:py-3 rounded-lg hover:bg-blue-700 transition-colors duration-200 font-medium flex items-center text-sm sm:text-base"
+                className="bg-blue-600 text-white px-6 md:px-8 py-3 rounded-lg hover:bg-blue-700 transition-colors duration-200 font-medium flex items-center text-sm sm:text-base"
               >
                 Let's Talk
                 <svg
@@ -272,7 +299,7 @@ const Hero = () => {
               <button
                 onClick={handleDownloadCV}
                 disabled={downloading}
-                className="bg-white text-gray-700 border-2 border-gray-300 px-4 sm:px-6 md:px-8 py-2.5 sm:py-3 rounded-lg hover:border-blue-600 hover:text-blue-600 transition-colors duration-200 font-medium flex items-center disabled:opacity-50 disabled:cursor-not-allowed text-sm sm:text-base"
+                className="bg-white text-gray-700 border-2 border-gray-300 px-6 md:px-8 py-3 rounded-lg hover:border-blue-600 hover:text-blue-600 transition-colors duration-200 font-medium flex items-center disabled:opacity-50 disabled:cursor-not-allowed text-sm sm:text-base"
               >
                 {downloading ? (
                   <>
@@ -293,7 +320,7 @@ const Hero = () => {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.7 }}
-              className="flex items-center space-x-4"
+              className="flex items-center"
             >
               <div className="bg-white p-3 rounded-lg shadow-md flex items-center space-x-6">
                 {heroContent.linkedinUrl && (
@@ -329,27 +356,33 @@ const Hero = () => {
             transition={{ duration: 0.6, delay: 0.2 }}
             className="relative z-10"
           >
-            <div className="relative">
+            <div className="relative max-w-sm lg:max-w-md mx-auto pr-4 sm:pr-6 md:pr-8 lg:pr-12">
+              <div className="absolute -top-6 -right-6 w-24 h-24 rounded-full bg-blue-200 blur-3xl opacity-60"></div>
+              <div className="absolute -bottom-6 -left-4 w-20 h-20 rounded-full bg-purple-200 blur-3xl opacity-70"></div>
               {/* Dynamic Portrait Image - Fetched from Database */}
               {heroContent.image && heroContent.image.trim() !== '' ? (
                 <motion.div
                   initial={{ opacity: 0, scale: 0.9 }}
                   animate={{ opacity: 1, scale: 1 }}
                   transition={{ delay: 0.7 }}
-                  className="relative bg-gray-200 rounded-2xl overflow-hidden shadow-2xl"
+                  className="relative rounded-2xl overflow-hidden shadow-2xl"
                 >
                   <img
                     src={heroContent.image}
                     alt={heroContent.name || 'Portrait'}
-                    className="w-full h-[400px] sm:h-[500px] md:h-[600px] object-cover"
+                    className="w-full h-[320px] sm:h-[400px] md:h-[480px] lg:h-[520px] object-cover object-top"
                     loading="lazy"
-                    onError={(e) => {
+                    onError={e => {
                       console.error('Error loading hero image:', heroContent.image);
-                      e.target.onerror = null; // Prevent infinite loop
-                      e.target.src = 'https://via.placeholder.com/400x600?text=Image+Not+Available';
-                    }}
-                    onLoad={() => {
-                      // Image loaded successfully
+                      // Prevent infinite loop by checking if already set to placeholder
+                      if (
+                        e.target.src !==
+                        'https://via.placeholder.com/400x560?text=Image+Not+Available'
+                      ) {
+                        e.target.onerror = null; // Prevent infinite loop
+                        e.target.src =
+                          'https://via.placeholder.com/400x560?text=Image+Not+Available';
+                      }
                     }}
                   />
                 </motion.div>
@@ -358,35 +391,21 @@ const Hero = () => {
                   initial={{ opacity: 0, scale: 0.9 }}
                   animate={{ opacity: 1, scale: 1 }}
                   transition={{ delay: 0.7 }}
-                  className="relative bg-gray-200 rounded-2xl overflow-hidden shadow-2xl"
+                  className="relative rounded-2xl overflow-hidden shadow-2xl"
                 >
-                  <div className="w-full h-[400px] sm:h-[500px] md:h-[600px] bg-gradient-to-br from-blue-100 to-blue-200 flex items-center justify-center">
-                    <div className="text-center">
-                      <div className="w-32 h-32 bg-blue-300 rounded-full mx-auto mb-4 flex items-center justify-center">
+                  <div className="h-[320px] sm:h-[400px] md:h-[480px] lg:h-[520px] bg-gradient-to-br from-blue-100 to-blue-200 flex items-center justify-center">
+                    <div className="text-center px-6">
+                      <div className="w-28 h-28 bg-blue-300 rounded-full mx-auto mb-4 flex items-center justify-center">
                         <span className="text-4xl text-blue-700">👨‍💼</span>
                       </div>
-                      <p className="text-gray-600">Portrait Image</p>
-                      <p className="text-gray-400 text-sm mt-2">Upload an image in the admin panel</p>
+                      <p className="text-gray-600 font-semibold">Portrait Image</p>
+                      <p className="text-gray-400 text-sm mt-2">
+                        Upload an image in the admin panel
+                      </p>
                     </div>
                   </div>
                 </motion.div>
               )}
-
-              {/* Customer Review Badge */}
-              {/* <motion.div
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: 0.8 }}
-                className="absolute top-8 left-8 bg-white p-4 rounded-lg shadow-lg"
-              >
-                <div className="flex items-center space-x-1 mb-2">
-                  {[...Array(5)].map((_, i) => (
-                    <Star key={i} className="text-yellow-400 fill-yellow-400" size={16} />
-                  ))}
-                </div>
-                <p className="text-gray-700 font-semibold text-sm">20k+ Customer Review</p>
-              </motion.div> */}
-
             </div>
           </motion.div>
         </div>
