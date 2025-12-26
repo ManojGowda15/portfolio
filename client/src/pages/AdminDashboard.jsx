@@ -28,7 +28,43 @@ import {
 import { projectsAPI, contactAPI, adminAPI, cvAPI, heroAPI, aboutAPI, servicesAPI, feedbackAPI, educationAPI } from '../utils/api';
 import ImageCropper from '../components/ImageCropper';
 import { useToast } from '../components/Toast';
-import { DEFAULT_HERO, DEFAULT_ABOUT, DEFAULT_SERVICES, DEFAULT_PROJECT } from '../utils/defaults';
+// Empty form structures for AdminDashboard initialization
+const EMPTY_HERO = {
+  greeting: '',
+  name: '',
+  designation: '',
+  description: '',
+  linkedinUrl: '',
+  githubUrl: '',
+  image: '',
+  phone: '',
+  email: '',
+  address: '',
+};
+
+const EMPTY_ABOUT = {
+  description: '',
+  skills: [],
+  highlights: [],
+  mission: '',
+};
+
+const EMPTY_SERVICES = {
+  sectionTitle: '',
+  sectionDescription: '',
+  services: [],
+};
+
+const EMPTY_PROJECT = {
+  title: '',
+  description: '',
+  category: 'Website Design',
+  image: '',
+  technologies: '',
+  liveUrl: '',
+  githubUrl: '',
+  featured: false,
+};
 
 const AdminDashboard = () => {
   const [activeTab, setActiveTab] = useState('projects');
@@ -44,25 +80,25 @@ const AdminDashboard = () => {
   const [editingProject, setEditingProject] = useState(null);
   const [projectImageFile, setProjectImageFile] = useState(null);
   const [uploadingImage, setUploadingImage] = useState(false);
-  const [heroContent, setHeroContent] = useState(DEFAULT_HERO);
+  const [heroContent, setHeroContent] = useState(EMPTY_HERO);
   const [savingHero, setSavingHero] = useState(false);
   const [heroImageFile, setHeroImageFile] = useState(null);
   const [uploadingHeroImage, setUploadingHeroImage] = useState(false);
-  const [aboutContent, setAboutContent] = useState(DEFAULT_ABOUT);
+  const [aboutContent, setAboutContent] = useState(EMPTY_ABOUT);
   const [savingAbout, setSavingAbout] = useState(false);
   const [showCropper, setShowCropper] = useState(false);
   const [cropperImageSrc, setCropperImageSrc] = useState(null);
   const [cropperType, setCropperType] = useState(null); // currently only 'hero'
   const [cropperAspectRatio, setCropperAspectRatio] = useState(null);
-  const [servicesContent, setServicesContent] = useState(DEFAULT_SERVICES);
+  const [servicesContent, setServicesContent] = useState(EMPTY_SERVICES);
   const [savingServices, setSavingServices] = useState(false);
   const [educationContent, setEducationContent] = useState({
-    sectionTitle: 'Education',
-    sectionDescription: 'All my life I have been driven by my strong belief that education is important. I try to learn something new every single day.',
+    sectionTitle: '',
+    sectionDescription: '',
     educationItems: [],
   });
   const [savingEducation, setSavingEducation] = useState(false);
-  const [projectForm, setProjectForm] = useState(DEFAULT_PROJECT);
+  const [projectForm, setProjectForm] = useState(EMPTY_PROJECT);
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const navigate = useNavigate();
@@ -347,7 +383,7 @@ const AdminDashboard = () => {
 
   const handleAddProject = () => {
     setEditingProject(null);
-    setProjectForm(DEFAULT_PROJECT);
+    setProjectForm(EMPTY_PROJECT);
     setShowProjectModal(true);
   };
 

@@ -6,7 +6,14 @@ import Education from '../models/Education.js';
  */
 export const getEducation = async (req, res, next) => {
   try {
-    const education = await Education.getEducation();
+    const education = await Education.findOne();
+    
+    if (!education) {
+      return res.status(404).json({
+        success: false,
+        message: 'Education section not found',
+      });
+    }
     
     res.status(200).json({
       success: true,
@@ -32,8 +39,8 @@ export const updateEducation = async (req, res, next) => {
     if (!education) {
       // Create new education if none exists
       education = await Education.create({
-        sectionTitle: sectionTitle || 'Education',
-        sectionDescription: sectionDescription || 'All my life I have been driven by my strong belief that education is important. I try to learn something new every single day.',
+        sectionTitle: sectionTitle || '',
+        sectionDescription: sectionDescription || '',
         educationItems: educationItems || [],
       });
     } else {

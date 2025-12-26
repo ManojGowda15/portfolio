@@ -2,10 +2,14 @@ import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 import rateLimit from 'express-rate-limit';
+import compression from 'compression';
+import morgan from 'morgan';
 import dotenv from 'dotenv';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { errorHandler } from './middleware/errorHandler.js';
+import { requestIdMiddleware } from './middleware/requestId.js';
+import mongoose from 'mongoose';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -26,10 +30,37 @@ dotenv.config();
 
 const app = express();
 
+// Request ID middleware (must be first)
+app.use(requestIdMiddleware);
+
+// HTTP request logging
+if (process.env.NODE_ENV === 'production') {
+  // In production, use combined format with request ID
+  app.use(morgan('combined', {
+    skip: (req, res) => res.statusCode < 400, // Only log errors in production
+  }));
+} else {
+  // In development, use dev format
+  app.use(morgan('dev'));
+}
+
+// Compression middleware (gzip) - reduces response size
+app.use(compression());
+
 // Security middleware
 app.use(helmet({
   crossOriginResourcePolicy: { policy: "cross-origin" },
   crossOriginEmbedderPolicy: false,
+  contentSecurityPolicy: {
+    directives: {
+      defaultSrc: ["'self'"],
+      styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
+      fontSrc: ["'self'", "https://fonts.gstatic.com"],
+      scriptSrc: ["'self'"],
+      imgSrc: ["'self'", "data:", "https:", "http:"],
+      connectSrc: ["'self'"],
+    },
+  },
 }));
 
 // CORS configuration
@@ -64,7 +95,7 @@ app.use(cors(corsOptions));
 // General rate limiting for all API routes
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100, // limit each IP to 100 requests per windowMs
+  max: process.env.NODE_ENV === 'development' ? 1000 : 100, // Higher limit in development, 100 in production
   message: {
     success: false,
     message: 'Too many requests from this IP, please try again later.',
@@ -116,11 +147,27 @@ app.get('/', (req, res) => {
   });
 });
 
-// Health check route
-app.get('/api/health', (req, res) => {
-  res.status(200).json({
-    success: true,
-    message: 'Server is running',
+// Health check route with database status
+app.get('/api/health', async (req, res) => {
+  const dbStatus = mongoose.connection.readyState;
+  const dbStates = {
+    0: 'disconnected',
+    1: 'connected',
+    2: 'connecting',
+    3: 'disconnecting',
+  };
+
+  const isHealthy = dbStatus === 1;
+
+  res.status(isHealthy ? 200 : 503).json({
+    success: isHealthy,
+    message: isHealthy ? 'Server is running' : 'Server is running but database is disconnected',
+    timestamp: new Date().toISOString(),
+    uptime: process.uptime(),
+    database: {
+      status: dbStates[dbStatus] || 'unknown',
+      connected: dbStatus === 1,
+    },
   });
 });
 

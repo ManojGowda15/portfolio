@@ -1,0 +1,7 @@
+# Ignore all export files except structure
+*.json
+!database-structure.json
+
+# Keep directory in git
+!.gitkeep
+

@@ -12,7 +12,14 @@ const __dirname = path.dirname(__filename);
  */
 export const getHero = async (req, res, next) => {
   try {
-    const hero = await Hero.getHero();
+    const hero = await Hero.findOne();
+    
+    if (!hero) {
+      return res.status(404).json({
+        success: false,
+        message: 'Hero section not found',
+      });
+    }
     
     // Normalize image URL if it exists
     const heroData = hero.toObject();
@@ -55,12 +62,12 @@ export const updateHero = async (req, res, next) => {
     if (!hero) {
       // Create new hero if none exists
       hero = await Hero.create({
-        greeting: greeting || 'Hi I am',
-        name: name || 'Manoj V',
-        designation: designation || 'Software Developer',
+        greeting: greeting || '',
+        name: name || '',
+        designation: designation || '',
         description: description || '',
-        linkedinUrl: linkedinUrl || 'https://www.linkedin.com/in/manojv03/',
-        githubUrl: githubUrl || 'https://github.com/ManojGowda15',
+        linkedinUrl: linkedinUrl || '',
+        githubUrl: githubUrl || '',
         image: imageUrl || '',
         phone: phone || '',
         email: email || '',

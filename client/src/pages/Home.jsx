@@ -10,7 +10,7 @@ import Footer from '../components/Footer';
 
 const Home = () => {
   return (
-    <div className="min-h-screen overflow-x-hidden">
+    <div className="min-h-screen overflow-x-hidden overflow-y-auto">
       <Header />
       <Hero />
       <About />

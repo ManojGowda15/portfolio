@@ -6,7 +6,14 @@ import About from '../models/About.js';
  */
 export const getAbout = async (req, res, next) => {
   try {
-    const about = await About.getAbout();
+    const about = await About.findOne();
+
+    if (!about) {
+      return res.status(404).json({
+        success: false,
+        message: 'About section not found',
+      });
+    }
 
     res.status(200).json({
       success: true,
@@ -32,10 +39,10 @@ export const updateAbout = async (req, res, next) => {
     if (!about) {
       // Create new about if none exists
       about = await About.create({
-        description: description || 'Passionate UI/UX Designer with a Creative Approach to Crafting Intuitive and Engaging User Experiences',
+        description: description || '',
         skills: skills || [],
         highlights: highlights || [],
-        mission: mission || 'Crafting meaningful products that balance stunning visuals with dependable performance.',
+        mission: mission || '',
       });
     } else {
       // Update existing about

@@ -2,18 +2,19 @@ import rateLimit from 'express-rate-limit';
 
 /**
  * Strict rate limiter for login endpoint to prevent brute force attacks
- * Allows only 5 attempts per 15 minutes per IP
+ * Allows only 5 failed attempts per 15 minutes per IP
+ * In development mode, allows more attempts for easier testing
  */
 export const loginLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 5, // Limit each IP to 5 login requests per windowMs
+  max: process.env.NODE_ENV === 'development' ? 20 : 5, // More attempts in dev mode
   message: {
     success: false,
     message: 'Too many login attempts. Please try again after 15 minutes.',
   },
   standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
   legacyHeaders: false, // Disable the `X-RateLimit-*` headers
-  skipSuccessfulRequests: false, // Count successful requests too
+  skipSuccessfulRequests: true, // Don't count successful logins - only failed attempts
   skipFailedRequests: false, // Count failed requests
 });
 

@@ -6,7 +6,14 @@ import Service from '../models/Service.js';
  */
 export const getServices = async (req, res, next) => {
   try {
-    const service = await Service.getServices();
+    const service = await Service.findOne();
+
+    if (!service) {
+      return res.status(404).json({
+        success: false,
+        message: 'Services section not found',
+      });
+    }
 
     res.status(200).json({
       success: true,
@@ -25,7 +32,14 @@ export const getServices = async (req, res, next) => {
 export const getServiceBySlug = async (req, res, next) => {
   try {
     const { slug } = req.params;
-    const service = await Service.getServices();
+    const service = await Service.findOne();
+    
+    if (!service) {
+      return res.status(404).json({
+        success: false,
+        message: 'Services section not found',
+      });
+    }
     
     const serviceItem = service.services.find(s => s.slug === slug);
     
@@ -60,8 +74,8 @@ export const updateServices = async (req, res, next) => {
     if (!service) {
       // Create new service if none exists
       service = await Service.create({
-        sectionTitle: sectionTitle || 'My Design Services',
-        sectionDescription: sectionDescription || 'Crafting visually engaging interfaces that are both intuitive and user-centered, ensuring a seamless experience.',
+        sectionTitle: sectionTitle || '',
+        sectionDescription: sectionDescription || '',
         services: services || [],
       });
     } else {

@@ -11,10 +11,7 @@ dotenv.config();
 const createAdmin = async () => {
   try {
     // Connect to database
-    await mongoose.connect(process.env.MONGODB_URI, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    });
+    await mongoose.connect(process.env.MONGODB_URI);
     console.log('Connected to MongoDB');
 
     const username = process.argv[2] || 'admin';
