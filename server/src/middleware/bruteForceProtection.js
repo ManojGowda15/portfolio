@@ -16,6 +16,14 @@ export const loginLimiter = rateLimit({
   legacyHeaders: false, // Disable the `X-RateLimit-*` headers
   skipSuccessfulRequests: true, // Don't count successful logins - only failed attempts
   skipFailedRequests: false, // Count failed requests
+  // Custom key generator that works with trust proxy
+  keyGenerator: (req) => {
+    return req.ip || req.socket.remoteAddress || 'unknown';
+  },
+  // Disable trust proxy validation - we handle it ourselves
+  validate: {
+    trustProxy: false,
+  },
 });
 
 /**
@@ -31,5 +39,13 @@ export const moderateLimiter = rateLimit({
   },
   standardHeaders: true,
   legacyHeaders: false,
+  // Custom key generator that works with trust proxy
+  keyGenerator: (req) => {
+    return req.ip || req.socket.remoteAddress || 'unknown';
+  },
+  // Disable trust proxy validation - we handle it ourselves
+  validate: {
+    trustProxy: false,
+  },
 });
 
