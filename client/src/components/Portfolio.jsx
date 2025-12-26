@@ -74,7 +74,7 @@ const Portfolio = () => {
         }}></div>
       </div>
       
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+      <div className="container mx-auto px-8 sm:px-12 lg:px-20 xl:px-32 relative z-10">
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           whileInView={{ opacity: 1, y: 0 }}
