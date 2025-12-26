@@ -1,0 +1,543 @@
+{
+  "exportDate": "2025-12-25T15:03:39.672Z",
+  "database": "portfolio",
+  "schemas": {
+    "heroes": {
+      "modelName": "Hero",
+      "schema": {
+        "greeting": {
+          "type": "String",
+          "required": false,
+          "enum": []
+        },
+        "name": {
+          "type": "String",
+          "required": true,
+          "enum": []
+        },
+        "designation": {
+          "type": "String",
+          "required": true,
+          "enum": []
+        },
+        "description": {
+          "type": "String",
+          "required": true,
+          "enum": []
+        },
+        "linkedinUrl": {
+          "type": "String",
+          "required": false,
+          "enum": []
+        },
+        "githubUrl": {
+          "type": "String",
+          "required": false,
+          "enum": []
+        },
+        "image": {
+          "type": "String",
+          "required": false,
+          "enum": []
+        },
+        "phone": {
+          "type": "String",
+          "required": false,
+          "enum": []
+        },
+        "email": {
+          "type": "String",
+          "required": false,
+          "enum": []
+        },
+        "address": {
+          "type": "String",
+          "required": false,
+          "enum": []
+        },
+        "_id": {
+          "type": "ObjectId",
+          "required": false,
+          "enum": null
+        },
+        "createdAt": {
+          "type": "Date",
+          "required": false,
+          "enum": null
+        },
+        "updatedAt": {
+          "type": "Date",
+          "required": false,
+          "enum": null
+        },
+        "__v": {
+          "type": "Number",
+          "required": false,
+          "enum": null
+        }
+      }
+    },
+    "abouts": {
+      "modelName": "About",
+      "schema": {
+        "description": {
+          "type": "String",
+          "required": true,
+          "enum": []
+        },
+        "skills": {
+          "type": "Array",
+          "required": false,
+          "enum": null
+        },
+        "highlights": {
+          "type": "Array",
+          "required": false,
+          "enum": null
+        },
+        "mission": {
+          "type": "String",
+          "required": false,
+          "enum": []
+        },
+        "_id": {
+          "type": "ObjectId",
+          "required": false,
+          "enum": null
+        },
+        "createdAt": {
+          "type": "Date",
+          "required": false,
+          "enum": null
+        },
+        "updatedAt": {
+          "type": "Date",
+          "required": false,
+          "enum": null
+        },
+        "__v": {
+          "type": "Number",
+          "required": false,
+          "enum": null
+        }
+      }
+    },
+    "services": {
+      "modelName": "Service",
+      "schema": {
+        "sectionTitle": {
+          "type": "String",
+          "required": false,
+          "enum": []
+        },
+        "sectionDescription": {
+          "type": "String",
+          "required": false,
+          "enum": []
+        },
+        "services": {
+          "type": "Array",
+          "required": false,
+          "enum": null
+        },
+        "_id": {
+          "type": "ObjectId",
+          "required": false,
+          "enum": null
+        },
+        "createdAt": {
+          "type": "Date",
+          "required": false,
+          "enum": null
+        },
+        "updatedAt": {
+          "type": "Date",
+          "required": false,
+          "enum": null
+        },
+        "__v": {
+          "type": "Number",
+          "required": false,
+          "enum": null
+        }
+      }
+    },
+    "educations": {
+      "modelName": "Education",
+      "schema": {
+        "sectionTitle": {
+          "type": "String",
+          "required": true,
+          "enum": []
+        },
+        "sectionDescription": {
+          "type": "String",
+          "required": true,
+          "enum": []
+        },
+        "educationItems": {
+          "type": "Array",
+          "required": false,
+          "enum": null
+        },
+        "_id": {
+          "type": "ObjectId",
+          "required": false,
+          "enum": null
+        },
+        "createdAt": {
+          "type": "Date",
+          "required": false,
+          "enum": null
+        },
+        "updatedAt": {
+          "type": "Date",
+          "required": false,
+          "enum": null
+        },
+        "__v": {
+          "type": "Number",
+          "required": false,
+          "enum": null
+        }
+      }
+    },
+    "projects": {
+      "modelName": "Project",
+      "schema": {
+        "title": {
+          "type": "String",
+          "required": true,
+          "enum": []
+        },
+        "description": {
+          "type": "String",
+          "required": true,
+          "enum": []
+        },
+        "category": {
+          "type": "String",
+          "required": true,
+          "default": "Website Design",
+          "enum": [
+            "Website Design",
+            "App Design"
+          ]
+        },
+        "image": {
+          "type": "String",
+          "required": true,
+          "enum": []
+        },
+        "technologies": {
+          "type": "Array",
+          "required": false,
+          "enum": null
+        },
+        "liveUrl": {
+          "type": "String",
+          "required": false,
+          "default": "",
+          "enum": []
+        },
+        "githubUrl": {
+          "type": "String",
+          "required": false,
+          "default": "",
+          "enum": []
+        },
+        "featured": {
+          "type": "Boolean",
+          "required": false,
+          "default": false,
+          "enum": null
+        },
+        "_id": {
+          "type": "ObjectId",
+          "required": false,
+          "enum": null
+        },
+        "createdAt": {
+          "type": "Date",
+          "required": false,
+          "enum": null
+        },
+        "updatedAt": {
+          "type": "Date",
+          "required": false,
+          "enum": null
+        },
+        "__v": {
+          "type": "Number",
+          "required": false,
+          "enum": null
+        }
+      }
+    },
+    "projectimages": {
+      "modelName": "ProjectImage",
+      "schema": {
+        "filename": {
+          "type": "String",
+          "required": true,
+          "enum": []
+        },
+        "originalName": {
+          "type": "String",
+          "required": true,
+          "enum": []
+        },
+        "filePath": {
+          "type": "String",
+          "required": true,
+          "enum": []
+        },
+        "relativePath": {
+          "type": "String",
+          "required": true,
+          "enum": []
+        },
+        "fileSize": {
+          "type": "Number",
+          "required": true,
+          "enum": null
+        },
+        "mimeType": {
+          "type": "String",
+          "required": true,
+          "enum": []
+        },
+        "width": {
+          "type": "Number",
+          "required": false,
+          "default": null,
+          "enum": null
+        },
+        "height": {
+          "type": "Number",
+          "required": false,
+          "default": null,
+          "enum": null
+        },
+        "uploadedBy": {
+          "type": "ObjectId",
+          "required": false,
+          "default": null,
+          "enum": null
+        },
+        "_id": {
+          "type": "ObjectId",
+          "required": false,
+          "enum": null
+        },
+        "createdAt": {
+          "type": "Date",
+          "required": false,
+          "enum": null
+        },
+        "updatedAt": {
+          "type": "Date",
+          "required": false,
+          "enum": null
+        },
+        "__v": {
+          "type": "Number",
+          "required": false,
+          "enum": null
+        }
+      }
+    },
+    "adminusers": {
+      "modelName": "AdminUser",
+      "schema": {
+        "username": {
+          "type": "String",
+          "required": true,
+          "enum": []
+        },
+        "email": {
+          "type": "String",
+          "required": true,
+          "enum": []
+        },
+        "password": {
+          "type": "String",
+          "required": true,
+          "enum": []
+        },
+        "_id": {
+          "type": "ObjectId",
+          "required": false,
+          "enum": null
+        },
+        "createdAt": {
+          "type": "Date",
+          "required": false,
+          "enum": null
+        },
+        "updatedAt": {
+          "type": "Date",
+          "required": false,
+          "enum": null
+        },
+        "__v": {
+          "type": "Number",
+          "required": false,
+          "enum": null
+        }
+      }
+    },
+    "messages": {
+      "modelName": "Message",
+      "schema": {
+        "name": {
+          "type": "String",
+          "required": true,
+          "enum": []
+        },
+        "email": {
+          "type": "String",
+          "required": true,
+          "enum": []
+        },
+        "subject": {
+          "type": "String",
+          "required": true,
+          "enum": []
+        },
+        "message": {
+          "type": "String",
+          "required": true,
+          "enum": []
+        },
+        "read": {
+          "type": "Boolean",
+          "required": false,
+          "default": false,
+          "enum": null
+        },
+        "_id": {
+          "type": "ObjectId",
+          "required": false,
+          "enum": null
+        },
+        "createdAt": {
+          "type": "Date",
+          "required": false,
+          "enum": null
+        },
+        "updatedAt": {
+          "type": "Date",
+          "required": false,
+          "enum": null
+        },
+        "__v": {
+          "type": "Number",
+          "required": false,
+          "enum": null
+        }
+      }
+    },
+    "feedbacks": {
+      "modelName": "Feedback",
+      "schema": {
+        "name": {
+          "type": "String",
+          "required": true,
+          "enum": []
+        },
+        "email": {
+          "type": "String",
+          "required": true,
+          "enum": []
+        },
+        "rating": {
+          "type": "Number",
+          "required": true,
+          "enum": null
+        },
+        "feedback": {
+          "type": "String",
+          "required": true,
+          "enum": []
+        },
+        "read": {
+          "type": "Boolean",
+          "required": false,
+          "default": false,
+          "enum": null
+        },
+        "_id": {
+          "type": "ObjectId",
+          "required": false,
+          "enum": null
+        },
+        "createdAt": {
+          "type": "Date",
+          "required": false,
+          "enum": null
+        },
+        "updatedAt": {
+          "type": "Date",
+          "required": false,
+          "enum": null
+        },
+        "__v": {
+          "type": "Number",
+          "required": false,
+          "enum": null
+        }
+      }
+    },
+    "cvs": {
+      "modelName": "CV",
+      "schema": {
+        "filename": {
+          "type": "String",
+          "required": true,
+          "enum": []
+        },
+        "originalName": {
+          "type": "String",
+          "required": true,
+          "enum": []
+        },
+        "filePath": {
+          "type": "String",
+          "required": true,
+          "enum": []
+        },
+        "fileSize": {
+          "type": "Number",
+          "required": true,
+          "enum": null
+        },
+        "mimeType": {
+          "type": "String",
+          "required": true,
+          "enum": []
+        },
+        "_id": {
+          "type": "ObjectId",
+          "required": false,
+          "enum": null
+        },
+        "createdAt": {
+          "type": "Date",
+          "required": false,
+          "enum": null
+        },
+        "updatedAt": {
+          "type": "Date",
+          "required": false,
+          "enum": null
+        },
+        "__v": {
+          "type": "Number",
+          "required": false,
+          "enum": null
+        }
+      }
+    }
+  }
+}
