@@ -30,6 +30,11 @@ dotenv.config();
 
 const app = express();
 
+// Trust proxy - required when behind a reverse proxy (nginx, load balancer, etc.)
+// This allows Express to correctly identify client IPs from X-Forwarded-For headers
+// Set to 1 for a single proxy (more secure than 'true')
+app.set('trust proxy', 1);
+
 // Request ID middleware (must be first)
 app.use(requestIdMiddleware);
 
@@ -105,6 +110,15 @@ const limiter = rateLimit({
   // Don't skip successful requests to prevent abuse
   skipSuccessfulRequests: false,
   skipFailedRequests: false,
+  // Custom key generator that works with trust proxy
+  keyGenerator: (req) => {
+    // Use the IP from Express (which respects trust proxy setting)
+    return req.ip || req.socket.remoteAddress || 'unknown';
+  },
+  // Disable trust proxy validation - we handle it ourselves with app.set('trust proxy', 1)
+  validate: {
+    trustProxy: false,
+  },
 });
 
 app.use('/api/', limiter);

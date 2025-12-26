@@ -105,28 +105,26 @@ export const register = async (req, res, next) => {
   try {
     const { username, email, password } = req.body;
 
-    // In production, only allow the very first admin account to be created.
-    // After that, additional registrations are blocked to prevent anyone from
-    // self‑registering an admin in a live environment.
-    const existingAdminsCount = await AdminUser.countDocuments();
-    if (existingAdminsCount > 0) {
-      return res.status(403).json({
+    // Validate input
+    if (!username || !email || !password) {
+      return res.status(400).json({
         success: false,
-        message: 'Admin registration is disabled. An admin account already exists.',
+        message: 'Please provide username, email, and password',
       });
     }
 
-    // Basic duplicate check for the very first admin (race‑condition safe enough
-    // for single‑user setup). This also prevents creating two admins at once
-    // if the count check above ran in parallel requests.
+    // Check for duplicate username or email
     const adminExists = await AdminUser.findOne({
-      $or: [{ username }, { email }],
+      $or: [
+        { username: username.toLowerCase().trim() },
+        { email: email.toLowerCase().trim() }
+      ],
     });
 
     if (adminExists) {
       return res.status(400).json({
         success: false,
-        message: 'Admin user already exists',
+        message: 'Admin user with this username or email already exists',
       });
     }
 
