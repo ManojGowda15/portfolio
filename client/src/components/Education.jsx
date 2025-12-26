@@ -37,7 +37,7 @@ const Education = () => {
   if (!loading && (error || !educationContent)) {
     return (
       <section id="education" className="py-20 sm:py-24 md:py-28 lg:py-36 section-bg-gradient relative overflow-hidden">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="container mx-auto px-8 sm:px-12 lg:px-20 xl:px-32">
           <div className="text-center py-16">
             <AlertCircle className="w-16 h-16 text-body-light mx-auto mb-4" />
             <h2 className="text-2xl font-bold text-primary mb-2">Education Section Not Available</h2>
@@ -54,7 +54,7 @@ const Education = () => {
       <div className="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-l from-[rgba(152,193,217,0.2)] to-transparent"></div>
       <div className="absolute bottom-0 left-0 w-1/2 h-full bg-gradient-to-r from-[rgba(152,193,217,0.2)] to-transparent"></div>
       
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+      <div className="container mx-auto px-8 sm:px-12 lg:px-20 xl:px-32 relative z-10">
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           whileInView={{ opacity: 1, y: 0 }}

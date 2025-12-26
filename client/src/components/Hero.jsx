@@ -245,7 +245,7 @@ const Hero = () => {
 
       {/* Content Container */}
       <div className="relative z-10 h-full md:h-full flex items-center">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 w-full pt-20 pb-4 sm:pt-24 sm:pb-6 md:py-12 lg:py-16">
+        <div className="container mx-auto px-8 sm:px-12 lg:px-20 xl:px-32 w-full pt-20 pb-4 sm:pt-24 sm:pb-6 md:py-12 lg:py-16">
           <div className="grid md:grid-cols-2 gap-4 md:gap-6 lg:gap-8 items-start md:items-center w-full">
             {/* Left Content */}
             <motion.div

@@ -72,7 +72,7 @@ const Services = () => {
   if (!loading && (error || !servicesContent || !servicesContent.services || servicesContent.services.length === 0)) {
     return (
       <section id="services" className="py-20 sm:py-24 md:py-28 lg:py-36 section-bg-gradient relative overflow-hidden">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="container mx-auto px-8 sm:px-12 lg:px-20 xl:px-32">
           <div className="text-center py-16">
             <AlertCircle className="w-16 h-16 text-body-light mx-auto mb-4" />
             <h2 className="text-2xl font-bold text-primary mb-2">Services Section Not Available</h2>
@@ -102,7 +102,7 @@ const Services = () => {
         className="absolute bottom-20 right-10 w-40 h-40 orb-primary opacity-40 rounded-full blur-3xl"
       />
       
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+      <div className="container mx-auto px-8 sm:px-12 lg:px-20 xl:px-32 relative z-10">
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           whileInView={{ opacity: 1, y: 0 }}

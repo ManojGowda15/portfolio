@@ -33,7 +33,7 @@ const About = () => {
   if (!loading && (error || !aboutContent)) {
     return (
       <section id="about" className="py-20 sm:py-24 md:py-28 lg:py-36 section-bg-gradient relative overflow-hidden">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="container mx-auto px-8 sm:px-12 lg:px-20 xl:px-32">
           <div className="text-center py-16">
             <AlertCircle className="w-16 h-16 text-body-light mx-auto mb-4" />
             <h2 className="text-2xl font-bold text-primary mb-2">About Section Not Available</h2>
@@ -51,7 +51,7 @@ const About = () => {
       <div className="absolute bottom-0 left-0 w-80 h-80 orb-primary opacity-20 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2"></div>
       <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-64 h-64 orb-primary opacity-10 rounded-full blur-3xl"></div>
       
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+      <div className="container mx-auto px-8 sm:px-12 lg:px-20 xl:px-32 relative z-10">
         {/* Modern Header with Icon */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}

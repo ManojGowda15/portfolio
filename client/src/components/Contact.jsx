@@ -48,7 +48,7 @@ const Contact = () => {
       <div className="absolute top-0 left-1/4 w-96 h-96 orb-primary opacity-30 rounded-full blur-3xl"></div>
       <div className="absolute bottom-0 right-1/4 w-80 h-80 orb-primary opacity-30 rounded-full blur-3xl"></div>
       
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+      <div className="container mx-auto px-8 sm:px-12 lg:px-20 xl:px-32 relative z-10">
         <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 xl:gap-16 items-start">
           {/* Left Column - Title & Subscribe */}
           <motion.div

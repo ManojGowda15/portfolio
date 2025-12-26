@@ -199,7 +199,7 @@ const ServiceDetail = () => {
       
       {/* Hero Section */}
       <section className={`${colors.light} py-20 pt-32`}>
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="container mx-auto px-8 sm:px-12 lg:px-20 xl:px-32">
           <motion.button
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
@@ -230,7 +230,7 @@ const ServiceDetail = () => {
 
       {/* Description Section */}
       <section className="py-20">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="container mx-auto px-8 sm:px-12 lg:px-20 xl:px-32">
           <div className="max-w-4xl mx-auto">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -248,7 +248,7 @@ const ServiceDetail = () => {
 
       {/* Features Section */}
       <section className="py-20 bg-gray-50">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="container mx-auto px-8 sm:px-12 lg:px-20 xl:px-32">
           <div className="max-w-4xl mx-auto">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -283,7 +283,7 @@ const ServiceDetail = () => {
 
       {/* Process Section */}
       <section className="py-20">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="container mx-auto px-8 sm:px-12 lg:px-20 xl:px-32">
           <div className="max-w-4xl mx-auto">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -325,7 +325,7 @@ const ServiceDetail = () => {
 
       {/* CTA Section */}
       <section className={`py-20 ${colors.light}`}>
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="container mx-auto px-8 sm:px-12 lg:px-20 xl:px-32">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}

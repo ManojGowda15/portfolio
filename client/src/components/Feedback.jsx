@@ -120,7 +120,7 @@ const Feedback = () => {
 
   return (
     <section id="feedback" className="py-12 sm:py-16 md:py-20">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="container mx-auto px-8 sm:px-12 lg:px-20 xl:px-32">
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           whileInView={{ opacity: 1, y: 0 }}
