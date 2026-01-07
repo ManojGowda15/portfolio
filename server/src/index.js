@@ -1,5 +1,6 @@
 import dotenv from 'dotenv';
-dotenv.config();
+// Only load .env file in development, don't override existing env vars in production
+dotenv.config({ override: false });
 
 import app from './app.js';
 import connectDB from './utils/db.js';
