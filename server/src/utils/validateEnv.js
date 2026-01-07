@@ -6,6 +6,15 @@ const validateEnv = () => {
   const required = ['MONGODB_URI', 'JWT_SECRET'];
   const missing = [];
 
+  // Debug: Log all environment variables (masked for security)
+  if (process.env.NODE_ENV === 'production') {
+    console.log('🔍 Checking environment variables...');
+    console.log(`   NODE_ENV: ${process.env.NODE_ENV}`);
+    console.log(`   PORT: ${process.env.PORT || 'not set'}`);
+    console.log(`   MONGODB_URI: ${process.env.MONGODB_URI ? '✓ set' : '✗ missing'}`);
+    console.log(`   JWT_SECRET: ${process.env.JWT_SECRET ? '✓ set' : '✗ missing'}`);
+  }
+
   required.forEach((key) => {
     if (!process.env[key]) {
       missing.push(key);
@@ -17,7 +26,11 @@ const validateEnv = () => {
     missing.forEach((key) => {
       console.error(`   - ${key}`);
     });
-    console.error('\n💡 Please check your .env file and ensure all required variables are set.');
+    console.error('\n💡 In Railway/Railpack:');
+    console.error('   1. Go to your service → Variables tab');
+    console.error('   2. Ensure MONGODB_URI and JWT_SECRET are set');
+    console.error('   3. Make sure they have actual values (not empty)');
+    console.error('   4. Redeploy after adding variables');
     process.exit(1);
   }
 
