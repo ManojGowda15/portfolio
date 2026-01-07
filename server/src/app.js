@@ -131,6 +131,13 @@ app.use(express.urlencoded({ extended: true, limit: '10mb' })); // Limit URL-enc
 app.use('/images', express.static(path.join(__dirname, '../public/images')));
 app.use('/cv', express.static(path.join(__dirname, '../public/cv')));
 
+// Serve static files from React app build in production
+if (process.env.NODE_ENV === 'production') {
+  const buildPath = path.join(__dirname, '../../client/build');
+  // Serve static files from the React app build directory
+  app.use(express.static(buildPath));
+}
+
 // Routes
 app.use('/api/projects', projectRoutes);
 app.use('/api/contact', contactRoutes);
@@ -142,24 +149,26 @@ app.use('/api/services', serviceRoutes);
 app.use('/api/feedback', feedbackRoutes);
 app.use('/api/education', educationRoutes);
 
-// Root route - API information
-app.get('/', (req, res) => {
-  res.status(200).json({
-    success: true,
-    message: 'Portfolio API Server',
-    version: '1.0.0',
-    endpoints: {
-      health: '/api/health',
-      projects: '/api/projects',
-      contact: '/api/contact',
-      feedback: '/api/feedback',
-      education: '/api/education',
-      admin: '/api/admin',
-    },
-    frontend: 'http://localhost:3000',
-    documentation: 'See README.md for API documentation',
+// Root route - API information (only in development)
+if (process.env.NODE_ENV !== 'production') {
+  app.get('/', (req, res) => {
+    res.status(200).json({
+      success: true,
+      message: 'Portfolio API Server',
+      version: '1.0.0',
+      endpoints: {
+        health: '/api/health',
+        projects: '/api/projects',
+        contact: '/api/contact',
+        feedback: '/api/feedback',
+        education: '/api/education',
+        admin: '/api/admin',
+      },
+      frontend: 'http://localhost:3000',
+      documentation: 'See README.md for API documentation',
+    });
   });
-});
+}
 
 // Health check route with database status
 app.get('/api/health', async (req, res) => {
@@ -184,6 +193,24 @@ app.get('/api/health', async (req, res) => {
     },
   });
 });
+
+// Serve React app for all non-API routes in production (for React Router)
+if (process.env.NODE_ENV === 'production') {
+  const buildPath = path.join(__dirname, '../../client/build');
+  // Catch-all handler: send back React's index.html file for all non-API routes
+  app.get('*', (req, res, next) => {
+    // Don't serve React app for API routes
+    if (req.path.startsWith('/api/')) {
+      return next(); // Let error handler deal with 404 API routes
+    }
+    // Serve React app index.html for all other routes
+    res.sendFile(path.join(buildPath, 'index.html'), (err) => {
+      if (err) {
+        res.status(500).send('Error loading the application');
+      }
+    });
+  });
+}
 
 // Error handler middleware (must be last)
 app.use(errorHandler);
