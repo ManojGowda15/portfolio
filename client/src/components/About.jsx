@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { aboutAPI } from '../utils/api';
-import { AlertCircle, Code, Palette, Rocket, Target, Award, TrendingUp, Sparkles } from 'lucide-react';
+import { AlertCircle, Code, Palette, Rocket, Target, Award, TrendingUp } from 'lucide-react';
 
 const About = () => {
   const [aboutContent, setAboutContent] = useState(null);
