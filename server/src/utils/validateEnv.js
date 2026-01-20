@@ -13,9 +13,10 @@ const validateEnv = () => {
     console.log(`   PORT: ${process.env.PORT || 'not set'}`);
     console.log(`   MONGODB_URI: ${process.env.MONGODB_URI ? '✓ set' : '✗ missing'}`);
     console.log(`   JWT_SECRET: ${process.env.JWT_SECRET ? '✓ set' : '✗ missing'}`);
+    console.log(`   JWT_SECRET: ${process.env.JWT_SECRET ? '✓ set' : '✗ missing'}`);
   }
 
-  required.forEach((key) => {
+  required.forEach(key => {
     if (!process.env[key]) {
       missing.push(key);
     }
@@ -23,7 +24,7 @@ const validateEnv = () => {
 
   if (missing.length > 0) {
     console.error('❌ Missing required environment variables:');
-    missing.forEach((key) => {
+    missing.forEach(key => {
       console.error(`   - ${key}`);
     });
     console.error('\n💡 In Railway/Railpack:');
@@ -46,4 +47,3 @@ const validateEnv = () => {
 };
 
 export default validateEnv;
-
