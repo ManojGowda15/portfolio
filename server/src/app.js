@@ -40,10 +40,11 @@ app.use(requestIdMiddleware);
 
 // HTTP request logging
 if (process.env.NODE_ENV === 'production') {
-  // In production, use combined format with request ID
-  app.use(morgan('combined', {
-    skip: (req, res) => res.statusCode < 400, // Only log errors in production
-  }));
+  const buildPath = path.join(__dirname, '../../client/build');
+  app.get('*', (req, res, next) => {
+    if (req.path.startsWith('/api/')) return next();
+    res.sendFile(path.join(buildPath, 'index.html'));
+  });
 } else {
   // In development, use dev format
   app.use(morgan('dev'));
@@ -53,36 +54,38 @@ if (process.env.NODE_ENV === 'production') {
 app.use(compression());
 
 // Security middleware
-app.use(helmet({
-  crossOriginResourcePolicy: { policy: "cross-origin" },
-  crossOriginEmbedderPolicy: false,
-  contentSecurityPolicy: {
-    directives: {
-      defaultSrc: ["'self'"],
-      styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
-      fontSrc: ["'self'", "https://fonts.gstatic.com"],
-      scriptSrc: ["'self'"],
-      imgSrc: ["'self'", "data:", "https:", "http:"],
-      connectSrc: ["'self'"],
+app.use(
+  helmet({
+    crossOriginResourcePolicy: { policy: 'cross-origin' },
+    crossOriginEmbedderPolicy: false,
+    contentSecurityPolicy: {
+      directives: {
+        defaultSrc: ["'self'"],
+        styleSrc: ["'self'", "'unsafe-inline'", 'https://fonts.googleapis.com'],
+        fontSrc: ["'self'", 'https://fonts.gstatic.com'],
+        scriptSrc: ["'self'"],
+        imgSrc: ["'self'", 'data:', 'https:', 'http:'],
+        connectSrc: ["'self'", 'https:'],
+      },
     },
-  },
-}));
+  })
+);
 
 // CORS configuration
 const corsOptions = {
   origin: function (origin, callback) {
     // Allow requests with no origin (like mobile apps, Postman, or same-origin requests)
     if (!origin) return callback(null, true);
-    
-    const allowedOrigins = process.env.CLIENT_URL 
+
+    const allowedOrigins = process.env.CLIENT_URL
       ? process.env.CLIENT_URL.split(',').map(url => url.trim())
       : ['http://localhost:3000'];
-    
+
     // In development, allow all origins for mobile testing
     if (process.env.NODE_ENV === 'development') {
       return callback(null, true);
     }
-    
+
     // In production, check against allowed origins
     if (allowedOrigins.includes(origin)) {
       callback(null, true);
@@ -111,7 +114,7 @@ const limiter = rateLimit({
   skipSuccessfulRequests: false,
   skipFailedRequests: false,
   // Custom key generator that works with trust proxy
-  keyGenerator: (req) => {
+  keyGenerator: req => {
     // Use the IP from Express (which respects trust proxy setting)
     return req.ip || req.socket.remoteAddress || 'unknown';
   },
@@ -204,7 +207,7 @@ if (process.env.NODE_ENV === 'production') {
       return next(); // Let error handler deal with 404 API routes
     }
     // Serve React app index.html for all other routes
-    res.sendFile(path.join(buildPath, 'index.html'), (err) => {
+    res.sendFile(path.join(buildPath, 'index.html'), err => {
       if (err) {
         res.status(500).send('Error loading the application');
       }
@@ -216,4 +219,3 @@ if (process.env.NODE_ENV === 'production') {
 app.use(errorHandler);
 
 export default app;
-
