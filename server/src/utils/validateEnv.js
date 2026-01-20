@@ -13,7 +13,7 @@ const validateEnv = () => {
     console.log(`   PORT: ${process.env.PORT || 'not set'}`);
     console.log(`   MONGODB_URI: ${process.env.MONGODB_URI ? '✓ set' : '✗ missing'}`);
     console.log(`   JWT_SECRET: ${process.env.JWT_SECRET ? '✓ set' : '✗ missing'}`);
-    console.log(`   JWT_SECRET: ${process.env.JWT_SECRET ? '✓ set' : '✗ missing'}`);
+    console.log(`   CLIENT_URL: ${process.env.CLIENT_URL || 'not set'}`);
   }
 
   required.forEach(key => {
